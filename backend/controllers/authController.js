@@ -12,8 +12,8 @@ export const register = async (req, res) => {
     if (await User.findOne({ email }))
       return res.status(400).json({ message: 'Email already registered' });
 
-    const user = await User.create({ name, email, password, age });
-    res.status(201).json({ _id: user._id, name: user.name, email: user.email, age: user.age, streak: 0, badges: [], token: genToken(user._id) });
+    const user = await User.create({ name, email, password, age: age || 20 });
+    res.status(201).json({ _id: user._id, name: user.name, email: user.email, age: user.age, ageGroup: user.ageGroup, streak: 0, badges: [], token: genToken(user._id) });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -39,7 +39,7 @@ export const login = async (req, res) => {
     user.lastLogin = new Date();
     await user.save();
 
-    res.json({ _id: user._id, name: user.name, email: user.email, age: user.age, streak: user.streak, badges: user.badges, activitiesDone: user.activitiesDone, token: genToken(user._id) });
+    res.json({ _id: user._id, name: user.name, email: user.email, age: user.age, ageGroup: user.ageGroup, streak: user.streak, badges: user.badges, activitiesDone: user.activitiesDone, token: genToken(user._id) });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

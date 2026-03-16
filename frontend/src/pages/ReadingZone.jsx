@@ -1,137 +1,187 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import AgeZoneBanner from '../components/AgeZoneBanner.jsx';
 
-const content = {
-  motivation: [
-    {
-      title: "The Bamboo Tree",
-      time: "2 min read",
-      emoji: "🎋",
-      body: `A farmer planted a bamboo seed and watered it faithfully every day. For five years, nothing appeared above the ground. His neighbors laughed, but he kept watering.
+const allContent = {
+  kids: {
+    stories: [
+      { title:"The Little Star Who Was Afraid", emoji:"⭐", time:"2 min",
+        body:`Once there was a little star who was afraid to shine because other stars were brighter.
 
-In the sixth year, the bamboo shot up 90 feet in just six weeks.
+One night, a child looked up and said, "I can only see YOU — you're my favourite star."
 
-People asked: "Did it grow in six weeks?"
+The little star realized: you don't have to be the biggest to matter. You just have to shine.
 
-The farmer smiled. "No. It grew in six years. All those years of watering built a root system strong enough to support its growth."
+You matter, just as you are. 🌟` },
+      { title:"The Brave Little Cloud", emoji:"☁️", time:"2 min",
+        body:`A little cloud was scared of storms. Every time thunder came, it would hide.
 
-Your hard work is never wasted. You are building roots. Keep going. 🌱`
-    },
-    {
-      title: "You Are Enough",
-      time: "1 min read",
-      emoji: "💛",
-      body: `On the days when nothing goes right — when you feel invisible, exhausted, or like you're falling behind — remember this:
+One day it learned: clouds don't cause storms — they bring rain that grows flowers.
 
-You don't have to earn your rest. You don't have to justify your existence. You don't have to fix everything today.
+Its "scary" parts were actually giving life to the world below.
 
-You are allowed to be a work in progress and still be worthy of love and kindness — especially from yourself.
+Your feelings — even the big scary ones — have a purpose. 🌧️🌸` },
+    ],
+    affirmations: [
+      "I am kind, clever, and full of ideas! 💡",
+      "I can do hard things — one step at a time! 🌈",
+      "My feelings are important and valid! 💛",
+      "I am loved just the way I am! 🤗",
+      "Every day I grow a little stronger! 💪",
+      "It's okay to make mistakes — that's how I learn! 🌱",
+    ],
+  },
+  teens: {
+    stories: [
+      { title:"Study Motivation: The 1% Rule", emoji:"📈", time:"2 min",
+        body:`If you improve just 1% every day, after one year you'll be 37 times better.
 
-Today, just breathe. Just be. That is enough. 💛`
-    },
-    {
-      title: "The Jar of Rocks",
-      time: "2 min read",
-      emoji: "🪨",
-      body: `A professor placed large rocks into a jar and asked students, "Is it full?" They said yes.
+That's the compound effect. Tiny consistent effort = massive results.
 
-He poured in small pebbles. "Now is it full?" Again they said yes.
+Don't compare yourself to others. Compare yourself to who you were yesterday.
 
-He added sand. It filled every gap.
+You don't need to be perfect. You need to be consistent. 📚` },
+      { title:"When Stress Feels Overwhelming", emoji:"🌊", time:"2 min",
+        body:`Every student feels it — the wave of stress before exams, deadlines, expectations.
 
-"This is your life," he said. "The rocks are the important things — family, health, dreams. The pebbles are your job and daily tasks. The sand is everything else.
+Here's the truth: stress means you care. And caring is not a weakness.
 
-If you fill your jar with sand first, there's no room for the rocks."
+But when the wave gets too big:
+→ Step away for 10 minutes
+→ Take 5 deep breaths
+→ Write down ONE thing to do next
 
-Put the big things first. Everything else will find its place. 🌿`
-    },
-  ],
-  quotes: [
-    { text: "You don't have to be perfect to be amazing.", author: "Unknown" },
-    { text: "Every day is a second chance.", author: "Unknown" },
-    { text: "In the middle of difficulty lies opportunity.", author: "Albert Einstein" },
-    { text: "You are braver than you believe, stronger than you seem.", author: "A.A. Milne" },
-    { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
-    { text: "The only way out is through.", author: "Robert Frost" },
-    { text: "Be the change you wish to see in the world.", author: "Mahatma Gandhi" },
-    { text: "Small steps every day lead to big change.", author: "Unknown" },
-    { text: "You owe yourself the love you so freely give others.", author: "Unknown" },
-    { text: "Rest is not a reward — it is a right.", author: "Unknown" },
-  ],
-  mindfulness: [
-    {
-      title: "The 5-4-3-2-1 Grounding Technique",
-      time: "2 min read",
-      emoji: "🌿",
-      body: `When anxiety or stress feels overwhelming, grounding yourself in the present moment can help.
+You can't control everything. Focus only on what's in front of you. 🌿` },
+    ],
+    tips: [
+      { title:"3 Ways to Beat Exam Stress", emoji:"✏️", time:"2 min",
+        body:`1. STUDY IN BLOCKS: 25 minutes study, 5 minutes break (Pomodoro technique). Your brain needs rest to retain information.
 
-Try this simple technique:
+2. SLEEP MATTERS: Staying up all night before an exam backfires. Sleep consolidates memory — 7-8 hours is your superpower.
 
-👀 Name 5 things you can SEE right now.
-✋ Name 4 things you can TOUCH (feel their texture).
-👂 Name 3 things you can HEAR.
-👃 Name 2 things you can SMELL.
-👅 Name 1 thing you can TASTE.
+3. TALK IT OUT: If anxiety is overwhelming, talk to a friend, parent, or counsellor. You don't have to carry it alone.` },
+    ],
+  },
+  young_adults: {
+    stories: [
+      { title:"The Productivity Trap", emoji:"⚡", time:"3 min",
+        body:`We live in a world that glorifies being busy. "I'm so busy" has become a badge of honour.
 
-This exercise pulls your mind from anxious thoughts and anchors it in the present. Do it slowly, breathing deeply between each sense.
+But busyness is not the same as productivity.
 
-You are here. You are safe. You are okay. 🌿`
-    },
-    {
-      title: "What Mindfulness Actually Means",
-      time: "2 min read",
-      emoji: "🧘",
-      body: `Mindfulness doesn't mean sitting in silence for hours. It doesn't mean emptying your mind.
+Research shows our best work comes in focused 90-minute blocks, not 14-hour grinds.
 
-It simply means paying attention to the present moment — without judgment.
+The most successful people protect their energy, not just their time.
 
-You can be mindful while washing dishes, feeling the warmth of the water.
-While eating, truly tasting each bite.
-While walking, noticing the ground beneath your feet.
+Do less. Do it better. Rest without guilt. 🌿` },
+      { title:"You Are Not Behind", emoji:"🛤️", time:"2 min",
+        body:`There's no universal timeline for life.
 
-The mind wanders — that's normal. Mindfulness is gently bringing it back, every time, without frustration.
+Some people graduate at 22 and feel lost at 30.
+Some find their passion at 35.
+Some build their best career at 40.
 
-One breath. One moment. That's all it takes to begin. 🌸`
-    },
-    {
-      title: "The Power of a Pause",
-      time: "1 min read",
-      emoji: "⏸️",
-      body: `Between every stimulus and response, there is a space.
+Social media shows highlights — not the full story.
 
-In that space lies your power — the power to choose how you react, instead of simply reacting.
+Your path is yours alone. There is no "behind". There is only forward. 🚀` },
+    ],
+    tips: [
+      { title:"5 Mindfulness Habits for Busy People", emoji:"🌸", time:"3 min",
+        body:`1. MORNING INTENTION: Before checking your phone, ask "How do I want to feel today?"
 
-Next time you feel triggered, overwhelmed, or reactive — pause for just three seconds.
+2. MINDFUL EATING: Eat one meal a day without screens. Taste it.
 
-Breathe in.
-Breathe out.
-Then choose your response.
+3. THE 3-BREATH RULE: Before any stressful meeting or task, take 3 deep breaths.
 
-That tiny pause is where emotional strength lives. Practice it daily, and it will change your life. 💪`
-    },
-  ]
+4. DIGITAL SUNSET: No screens 30 minutes before bed. Read or journal instead.
+
+5. GRATITUDE DUMP: Each night, write 3 things that went well — no matter how small.` },
+    ],
+  },
+  adults: {
+    stories: [
+      { title:"Work-Life Balance Is a Daily Practice", emoji:"⚖️", time:"3 min",
+        body:`Balance doesn't mean equal time. It means intentional time.
+
+Some weeks, work needs 80% of you. Other weeks, family does.
+
+The goal isn't perfect split — it's that neither area is always neglected.
+
+Three questions to ask yourself weekly:
+→ Did I do meaningful work?
+→ Did I connect with people I love?
+→ Did I take care of my body?
+
+If yes to all three — you're in balance. 🌿` },
+      { title:"It's Okay to Rest", emoji:"🌙", time:"2 min",
+        body:`We were never designed to produce endlessly.
+
+Nature doesn't run 24/7. Flowers close at night. Rivers rest in pools.
+
+Rest is not a reward for finishing work. It is a biological necessity.
+
+When you rest, your brain consolidates memories, repairs cells, and recharges creativity.
+
+Resting is productive. You are allowed to stop. 💛` },
+    ],
+    tips: [
+      { title:"Managing Stress as an Adult", emoji:"💚", time:"3 min",
+        body:`Chronic stress is the silent driver of most adult health problems. Here's what actually works:
+
+1. MOVEMENT: 20 minutes of walking reduces cortisol by 15%. You don't need a gym.
+
+2. CONNECTION: Loneliness is as harmful as smoking. Call someone you've been meaning to reach out to.
+
+3. BOUNDARIES: Learn to say "I can't take that on right now." It is a complete sentence.
+
+4. SLEEP: Non-negotiable. 7 hours minimum. Your brain detoxes itself during sleep.
+
+5. PROFESSIONAL SUPPORT: Therapy is not weakness — it's the most intelligent form of self-care.` },
+    ],
+  },
 };
 
 const tabs = [
-  { id:'motivation',  label:'📖 Stories',      emoji:'📖' },
-  { id:'quotes',      label:'✨ Quotes',        emoji:'✨' },
-  { id:'mindfulness', label:'🌿 Mindfulness',   emoji:'🌿' },
+  { id:'stories', label:'📖 Stories'      },
+  { id:'tips',    label:'💡 Tips'          },
+  { id:'affirmations', label:'✨ Affirmations' },
 ];
 
 export default function ReadingZone() {
-  const [tab,      setTab]      = useState('motivation');
+  const [ageGroup, setAgeGroup] = useState('young_adults');
+  const [tab,      setTab]      = useState('stories');
   const [openIdx,  setOpenIdx]  = useState(null);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (user.ageGroup) setAgeGroup(user.ageGroup);
+  }, []);
+
+  const content  = allContent[ageGroup] || allContent.young_adults;
+  const stories  = content.stories  || [];
+  const tips     = content.tips     || [];
+  const affirm   = content.affirmations || [];
+
+  // Filter tabs to what this age group has
+  const availableTabs = tabs.filter(t => {
+    if (t.id === 'stories')       return stories.length > 0;
+    if (t.id === 'tips')          return tips.length > 0;
+    if (t.id === 'affirmations')  return affirm.length > 0;
+    return false;
+  });
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 fade-in">
-      <div className="text-center mb-8">
+      <div className="text-center mb-6">
         <div className="text-5xl mb-2">📚</div>
-        <h1 className="text-3xl font-bold">MindBloom Reading Zone</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">Short reads for a calmer, happier mind.</p>
+        <h1 className="text-3xl font-bold">Reading Zone</h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">Content curated for your stage of life.</p>
       </div>
 
+      <AgeZoneBanner ageGroup={ageGroup} />
+
       {/* Tabs */}
-      <div className="flex gap-2 justify-center mb-8 flex-wrap">
-        {tabs.map(t => (
+      <div className="flex gap-2 justify-center mb-6 flex-wrap">
+        {availableTabs.map(t => (
           <button key={t.id} onClick={() => { setTab(t.id); setOpenIdx(null); }}
             className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all ${tab === t.id ? 'bg-bloom-green text-white shadow-md' : 'bg-white dark:bg-gray-700 hover:bg-bloom-green/20'}`}>
             {t.label}
@@ -139,67 +189,35 @@ export default function ReadingZone() {
         ))}
       </div>
 
-      {/* Stories */}
-      {tab === 'motivation' && (
-        <div className="space-y-4">
-          {content.motivation.map((s, i) => (
-            <div key={i} className="card fade-in">
-              <button className="w-full text-left" onClick={() => setOpenIdx(openIdx === i ? null : i)}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">{s.emoji}</span>
-                    <div>
-                      <h3 className="font-bold text-lg">{s.title}</h3>
-                      <span className="text-xs text-gray-400">⏱ {s.time}</span>
-                    </div>
-                  </div>
-                  <span className="text-xl text-gray-400">{openIdx === i ? '▲' : '▼'}</span>
+      {/* Stories & Tips (accordion) */}
+      {(tab === 'stories' ? stories : tips).map((s, i) => (
+        <div key={i} className="card mb-4 fade-in">
+          <button className="w-full text-left" onClick={() => setOpenIdx(openIdx === i ? null : i)}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">{s.emoji}</span>
+                <div>
+                  <h3 className="font-bold text-lg">{s.title}</h3>
+                  <span className="text-xs text-gray-400">⏱ {s.time}</span>
                 </div>
-              </button>
-              {openIdx === i && (
-                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line fade-in text-sm">
-                  {s.body}
-                </div>
-              )}
+              </div>
+              <span className="text-gray-400 text-xl">{openIdx === i ? '▲' : '▼'}</span>
             </div>
-          ))}
+          </button>
+          {openIdx === i && (
+            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line text-sm fade-in">
+              {s.body}
+            </div>
+          )}
         </div>
-      )}
+      ))}
 
-      {/* Quotes */}
-      {tab === 'quotes' && (
+      {/* Affirmations grid */}
+      {tab === 'affirmations' && affirm.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {content.quotes.map((q, i) => (
-            <div key={i} className="card fade-in bg-gradient-to-br from-bloom-lavender/10 to-bloom-blue/10 border border-bloom-lavender/20">
-              <p className="text-gray-700 dark:text-gray-200 font-medium italic mb-3 leading-relaxed">"{q.text}"</p>
-              <p className="text-sm text-bloom-lavender font-semibold">— {q.author}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Mindfulness */}
-      {tab === 'mindfulness' && (
-        <div className="space-y-4">
-          {content.mindfulness.map((s, i) => (
-            <div key={i} className="card fade-in">
-              <button className="w-full text-left" onClick={() => setOpenIdx(openIdx === i ? null : i)}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">{s.emoji}</span>
-                    <div>
-                      <h3 className="font-bold text-lg">{s.title}</h3>
-                      <span className="text-xs text-gray-400">⏱ {s.time}</span>
-                    </div>
-                  </div>
-                  <span className="text-xl text-gray-400">{openIdx === i ? '▲' : '▼'}</span>
-                </div>
-              </button>
-              {openIdx === i && (
-                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line fade-in text-sm">
-                  {s.body}
-                </div>
-              )}
+          {affirm.map((a, i) => (
+            <div key={i} className="card fade-in bg-gradient-to-br from-bloom-lavender/10 to-bloom-blue/10 border border-bloom-lavender/20 text-center">
+              <p className="font-medium italic text-gray-700 dark:text-gray-200 leading-relaxed">{a}</p>
             </div>
           ))}
         </div>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import api from '../utils/api.js';
+import AgeZoneBanner from  '../components/AgeZoneBanner.jsx';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -48,6 +49,7 @@ export default function Dashboard({ user }) {
     plugins: { legend: { display: false } }
   };
 
+  <AgeZoneBanner ageGroup={user?.ageGroup || 'young_adults'} />
   const shortcuts = [
     { to:'/mood',       icon:'😊', label:'Log Mood'  },
     { to:'/games',      icon:'🎮', label:'Play Games' },
