@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api.js';
+import GoogleLoginButton from '../components/GoogleLoginButton.jsx';
 
 export default function Register({ setUser }) {
   const [form, setForm]   = useState({ name:'', email:'', password:'', age:'' });
@@ -22,6 +23,11 @@ export default function Register({ setUser }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleSuccess = (data) =>{
+    setUser(data);
+    navigate('/dashboard');
   };
 
   return (
@@ -60,6 +66,13 @@ export default function Register({ setUser }) {
             {loading ? '⏳ Creating account...' : 'Create Account 🌸'}
           </button>
         </form>
+ 
+       <br></br>
+        {/* Google Sign Up */}
+        <GoogleLoginButton
+          onSuccess={handleGoogleSuccess}
+          onError={setError}
+        />
 
         <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
           Already have an account?{' '}

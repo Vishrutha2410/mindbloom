@@ -64,7 +64,8 @@ export default function Dashboard({ user }) {
       <div className="card bg-gradient-to-r from-bloom-green/30 to-bloom-lavender/30 mb-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold">Hello, {user?.name?.split(' ')[0]} 👋</h1>
+            <h1 className="text-3xl font-bold">Hello,{' '} <Link to="/profile" classname="hover:text-bloom-lavender underline underline-offset-4 decoration-dotted transition-colors cursor-pointer"> 
+            {user?.name?.split(' ')[0]}</Link>{' '} 👋</h1>
             <p className="text-gray-600 dark:text-gray-300 mt-1">How are you feeling today? Let's make it a great day.</p>
           </div>
           <div className="flex gap-4 text-center">

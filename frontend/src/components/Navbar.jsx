@@ -55,7 +55,23 @@ export default function Navbar({ user, logout, dark, setDark }) {
             </Link>
           ))}
           {user ? (
-            <button onClick={logout} className="btn-secondary text-sm">Logout</button>
+            <div className="flex items-center gap-2 ml-2">
+              <Link to="/profile"
+                classname="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-bloom-green/20 transition-all group">
+                  {user.avatar ? (
+                    <img src={user.avatar} alt={user.name}
+                    className="w-8 h-8 rounded-full object-cover border-2 border-bloom-green" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-bloom-lavender flex items-center justify-center text-white text-xs font-bold border-2 border-bloom-lavender">
+                      {user.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2)}
+                      </div>
+                  )}
+                  <span className="text-sm font-medium group-hover:text-bloom-lavender transition-colors hidden lg:block">
+                    {user.name?.split('')[0]}
+                  </span>
+                  </Link>
+            <button onClick={logout} className="btn-secondary !py-1.5 !px-4 textsm">Logout</button>
+            </div>
           ) : (
             <>
               <Link to="/login"    onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg text-sm hover:bg-bloom-lavender/20">Login</Link>

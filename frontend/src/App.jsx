@@ -10,6 +10,7 @@ import Games        from './pages/Games.jsx';
 import DrawingBoard from './pages/DrawingBoard.jsx';
 import ReadingZone  from './pages/ReadingZone.jsx';
 import Meditation   from './pages/Meditation.jsx';
+import Profile      from './pages/Profile.jsx';
 
 const PrivateRoute = ({ children, user }) => user ? children : <Navigate to="/login" />;
 
@@ -49,6 +50,7 @@ export default function App() {
             <Route path="/draw"       element={<PrivateRoute user={user}><DrawingBoard /></PrivateRoute>} />
             <Route path="/reading"    element={<PrivateRoute user={user}><ReadingZone /></PrivateRoute>} />
             <Route path="/meditation" element={<PrivateRoute user={user}><Meditation /></PrivateRoute>} />
+            <Route path="/profile"    element={<PrivateRoute user={user}><Profile user={user} setUser={setUser} /></PrivateRoute>} />
           </Routes>
         </main>
       </div>

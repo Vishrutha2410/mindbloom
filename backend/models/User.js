@@ -15,6 +15,14 @@ const userSchema = new mongoose.Schema({
   password:  { type: String, required: true, minlength: 6 },
   age:       { type: Number },
   ageGroup:  { type: String, enum: ['kids', 'teens', 'young_adults', 'adults'], default: 'young_adults' },
+  googleId:  { type: String, default: null },
+  avatar:    { type: String, default: null },
+  // ── New profile fields ──────────────────────────────────────────
+  bio:            { type: String, default: '', maxlength: 200 },
+  phone:          { type: String, default: '' },
+  location:       { type: String, default: '' },
+  occupation:     { type: String, default: '' },
+  
   streak:    { type: Number, default: 0 },
   lastLogin: { type: Date },
   badges:    [{ type: String }],
