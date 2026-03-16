@@ -17,12 +17,13 @@ const userSchema = new mongoose.Schema({
   ageGroup:  { type: String, enum: ['kids', 'teens', 'young_adults', 'adults'], default: 'young_adults' },
   googleId:  { type: String, default: null },
   avatar:    { type: String, default: null },
+  cloudinaryId: { type: String, default: null },
   // ── New profile fields ──────────────────────────────────────────
   bio:            { type: String, default: '', maxlength: 200 },
   phone:          { type: String, default: '' },
   location:       { type: String, default: '' },
   occupation:     { type: String, default: '' },
-  
+
   streak:    { type: Number, default: 0 },
   lastLogin: { type: Date },
   badges:    [{ type: String }],

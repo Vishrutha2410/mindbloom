@@ -5,6 +5,32 @@ import User from '../models/User.js';
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const genToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
+// ── Streak helper — call this on every login ──────────────────────
+const updateStreak = (user) => {
+  const todayStr     = new Date().toDateString();
+  const yesterdayStr = new Date(Date.now() - 86400000).toDateString();
+  const lastStr      = user.lastLogin ? new Date(user.lastLogin).toDateString() : null;
+
+  if (lastStr === todayStr) {
+    // ✅ Already logged in today — do NOT increment, just keep streak
+    return;
+  }
+
+  if (lastStr === yesterdayStr) {
+    // ✅ Logged in yesterday — increment streak
+    user.streak += 1;
+  } else {
+    // ✅ Either first login ever, or missed days — reset to 1
+    user.streak = 1;
+  }
+
+  // Award streak badges
+  if (user.streak >= 7  && !user.badges.includes('🔥 7-Day Streak'))  user.badges.push('🔥 7-Day Streak');
+  if (user.streak >= 30 && !user.badges.includes('🏆 30-Day Streak')) user.badges.push('🏆 30-Day Streak');
+
+  user.lastLogin = new Date();
+};
+
 export const register = async (req, res) => {
   try {
     const { name, email, password, age } = req.body;
@@ -14,8 +40,8 @@ export const register = async (req, res) => {
     if (await User.findOne({ email }))
       return res.status(400).json({ message: 'Email already registered' });
 
-    const user = await User.create({ name, email, password, age: age || 20 });
-    res.status(201).json({ _id: user._id, name: user.name, email: user.email, age: user.age, ageGroup: user.ageGroup, streak: 0, badges: [], token: genToken(user._id) });
+    const user = await User.create({ name, email, password, age: age || 20, streak: 1, lastLogin: new Date(),});
+    res.status(201).json({ _id: user._id, name: user.name, email: user.email, age: user.age, ageGroup: user.ageGroup, streak: 1, badges: [], token: genToken(user._id) });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -28,25 +54,24 @@ export const login = async (req, res) => {
     if (!user || !(await user.matchPassword(password)))
       return res.status(401).json({ message: 'Invalid email or password' });
 
-    // Streak logic
-    const today = new Date().toDateString();
-    const last  = user.lastLogin ? new Date(user.lastLogin).toDateString() : null;
-    const yesterday = new Date(Date.now() - 86400000).toDateString();
-    if (last === yesterday)     user.streak += 1;
-    else if (last !== today)    user.streak  = 1;
-
-    // Badge awards
-    if (user.streak >= 7  && !user.badges.includes('🔥 7-Day Streak'))  user.badges.push('🔥 7-Day Streak');
-    if (user.streak >= 30 && !user.badges.includes('🏆 30-Day Streak')) user.badges.push('🏆 30-Day Streak');
-    user.lastLogin = new Date();
+    updateStreak(user);
     await user.save();
-
-    res.json({ _id: user._id, name: user.name, email: user.email, age: user.age, ageGroup: user.ageGroup, streak: user.streak, badges: user.badges, activitiesDone: user.activitiesDone, token: genToken(user._id) });
+    res.json({
+      _id:            user._id,
+      name:           user.name,
+      email:          user.email,
+      age:            user.age,
+      ageGroup:       user.ageGroup,
+      streak:         user.streak,
+      badges:         user.badges,
+      activitiesDone: user.activitiesDone,
+      token:          genToken(user._id),
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
- 
+
 // ── Google OAuth ──────────────────────────────────────────────────
 export const googleAuth = async (req, res) => {
   try {
@@ -73,19 +98,8 @@ export const googleAuth = async (req, res) => {
         user.googleId = googleId;
         user.avatar   = picture;
       }
-
-      // Streak logic
-      const today     = new Date().toDateString();
-      const last      = user.lastLogin ? new Date(user.lastLogin).toDateString() : null;
-      const yesterday = new Date(Date.now() - 86400000).toDateString();
-      if (last === yesterday)  user.streak += 1;
-      else if (last !== today) user.streak  = 1;
-        // Badge awards
-      if (user.streak >= 7  && !user.badges.includes('🔥 7-Day Streak'))  user.badges.push('🔥 7-Day Streak');
-      if (user.streak >= 30 && !user.badges.includes('🏆 30-Day Streak')) user.badges.push('🏆 30-Day Streak');
-      user.lastLogin = new Date();
+      updateStreak(user);
       await user.save();
-
     } else {
       // ── New user — create account from Google profile ────────────
       // Generate a random secure password (they won't use it — login is via Google)
@@ -98,7 +112,6 @@ export const googleAuth = async (req, res) => {
         avatar:    picture,
         age:       20,             // default age — user can update from profile
         lastLogin: new Date(),
-        streak:    1,
       });
     }
  // Step 4: Return same response shape as normal login
@@ -187,23 +200,45 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// ── Upload Avatar ─────────────────────────────────────────────────
+// ── Upload Avatar (Cloudinary) ────────────────────────────────────
 export const uploadAvatar = async (req, res) => {
   try {
+    console.log('📸 Avatar upload request received');
+    console.log('📁 File:', req.file);
+
     if (!req.file)
-      return res.status(400).json({ message: 'No file uploaded' });
+      return res.status(400).json({ message: 'No file uploaded. Please select an image.' });
 
     const user = await User.findById(req.user._id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user)
+      return res.status(404).json({ message: 'User not found' });
 
-    // Build public URL
-    const avatarUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-    user.avatar = avatarUrl;
+    // Delete old Cloudinary image if exists
+    if (user.cloudinaryId) {
+      try {
+        const cloudinary = (await import('../config/cloudinary.js')).default;
+        await cloudinary.uploader.destroy(user.cloudinaryId);
+        console.log('🗑️ Old avatar deleted from Cloudinary');
+      } catch (e) {
+        console.log('⚠️ Could not delete old avatar:', e.message);
+      }
+    }
+
+    // req.file.path = full Cloudinary URL
+    // req.file.filename = public_id
+    user.avatar       = req.file.path;
+    user.cloudinaryId = req.file.filename;
     await user.save();
 
-    res.json({ avatar: avatarUrl, message: 'Profile picture updated!' });
+    console.log('✅ Avatar saved:', req.file.path);
+
+    res.json({
+      avatar:  req.file.path,
+      message: 'Profile picture updated! ✅',
+    });
+
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('❌ Avatar upload error:', err);
+    res.status(500).json({ message: err.message || 'Photo upload failed' });
   }
 };
-

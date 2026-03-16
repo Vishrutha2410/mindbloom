@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api.js';
 import { ageGroupLabel } from '../utils/ageGroup.js';
@@ -28,6 +28,33 @@ export default function Profile({ user, setUser }) {
   const [success,    setSuccess]    = useState('');
   const [error,      setError]      = useState('');
   const [previewAvatar, setPreviewAvatar] = useState(user?.avatar || null);
+  const [moodCount,     setMoodCount]     = useState(user?.moodCount || 0);
+  const [freshBadges,   setFreshBadges]   = useState(user?.badges   || []);
+  
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const { data } = await api.get('/auth/profile');
+
+        // Count moods separately
+        const moodRes = await api.get('/mood/history');
+        const count   = moodRes.data.length;
+
+        setMoodCount(count);
+        setFreshBadges(data.badges || []);
+
+        // Sync localStorage
+        const stored = JSON.parse(localStorage.getItem('user') || '{}');
+        stored.moodCount = count;
+        stored.badges    = data.badges;
+        localStorage.setItem('user', JSON.stringify(stored));
+        setUser(prev => ({ ...prev, moodCount: count, badges: data.badges }));
+      } catch (err) {
+        console.log('Profile fetch error:', err.message);
+      }
+    };
+    fetchProfile();
+  }, []);
 
    const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
@@ -66,13 +93,10 @@ export default function Profile({ user, setUser }) {
     setLoading(true); setError(''); setSuccess('');
 
     // Validate password change if attempted
-    if (passwords.newPass || passwords.current) {
-      if (!passwords.current)
-        return setError('Please enter your current password'), setLoading(false);
-      if (passwords.newPass.length < 6)
-        return setError('New password must be at least 6 characters'), setLoading(false);
-      if (passwords.newPass !== passwords.confirm)
-        return setError('New passwords do not match'), setLoading(false);
+   if (passwords.newPass || passwords.current) {
+      if (!passwords.current)          { setLoading(false); return setError('Enter your current password'); }
+      if (passwords.newPass.length < 6) { setLoading(false); return setError('New password must be at least 6 characters'); }
+      if (passwords.newPass !== passwords.confirm) { setLoading(false); return setError('New passwords do not match'); }
     }
 
     try {
@@ -85,7 +109,7 @@ export default function Profile({ user, setUser }) {
       const { data } = await api.put('/auth/profile', payload);
 
       // Update localStorage and parent state
-      const updated = { ...data, token: data.token || user.token };
+      const updated = { ...data, token: data.token || user.token, moodCount };
       localStorage.setItem('user',  JSON.stringify(updated));
       localStorage.setItem('token', updated.token);
       setUser(updated);
@@ -101,8 +125,6 @@ export default function Profile({ user, setUser }) {
 
   const getInitials = (name) =>
     name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '?';
-
-  const moodCount = user?.moodCount ?? user?.activitiesDone ?? 0;
 
   const tabs = [
     { id: 'personal',  label: '👤 Personal Info' },
@@ -338,7 +360,7 @@ export default function Profile({ user, setUser }) {
                 { badge:'🔥 7-Day Streak',    hint:'Login 7 days in a row'     },
                 { badge:'🏆 30-Day Streak',   hint:'Login 30 days in a row'    },
               ].map(b => {
-                const earned = user?.badges?.includes(b.badge);
+                const earned = freshBadges.includes(b.badge);
                 return (
                   <div key={b.badge}
                     className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all ${earned ? 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 font-semibold' : 'bg-gray-100 dark:bg-gray-700 text-gray-400 opacity-60'}`}>

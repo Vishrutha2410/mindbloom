@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MoodSelector  from '../components/MoodSelector.jsx';
 import ActivityCard  from '../components/ActivityCard.jsx';
@@ -23,21 +23,42 @@ export default function MoodTracker() {
 
   const handleMoodSelect = async (mood) => {
     setSelected(mood);
+    setError('');
     try {
       const { data } = await api.get(`/activities/mood/${mood}`);
       setActivities(data);
-    } catch {}
+    } catch(err){
+      console.log('Activity fetch error:', err.message);
+    }
   };
 
   const handleSubmit = async () => {
     if (!selected) return;
     setLoading(true);
+    setError(' ');
     try {
-      await api.post('/mood', { mood: selected, note });
+      const { data } = await api.post('/mood', {mood: selected, note });
+
+      const stored = JSON.parse(localStorage.getItem('user') || '{}');
+      stored.moodCount = (stored.moodCount || 0) + 1;
+      if (data.badges)   stored.badges   = data.badges;
+      if (data.moodCount) stored.moodCount = data.moodCount;
+      localStorage.setItem('user', JSON.stringify(stored));
+
       setSubmitted(true);
-    } catch {} finally {
+    } catch (err){
+      setError('Failed to save mood. Please try again.');
+    } finally {
       setLoading(false);
     }
+  };
+
+  const handleReset = () => {
+    setSubmitted(false);
+    setSelected('');
+    setNote('');
+    setActivities([]);
+    setError('');
   };
 
   return (
@@ -50,6 +71,13 @@ export default function MoodTracker() {
 
       {!submitted ? (
         <>
+        {/* Error */}
+          {error && (
+            <div className="bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl mb-4 text-sm">
+              {error}
+            </div>
+          )}
+
           <div className="card mb-6">
             <MoodSelector selected={selected} onSelect={handleMoodSelect} />
           </div>
@@ -85,12 +113,18 @@ export default function MoodTracker() {
           <div className="text-6xl mb-4">🎉</div>
           <h2 className="text-2xl font-bold mb-2">Mood Logged!</h2>
           <p className="text-gray-500 dark:text-gray-400 mb-6">Great job checking in. Here are your personalised activities:</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left mb-6">
-            {activities.map(a => <ActivityCard key={a._id} activity={a} />)}
-          </div>
+          {activities.length>0? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left mb-6">
+              {activities.map(a => <ActivityCard key={a._id} activity={a} />)}
+            </div>
+          ) : (
+            <div className="text-gray-400 mb-6 py-4">
+              <div className="text-4xl mb-2">🌿</div>
+              <p className="text-sm">No specific activities recommended at the moment.</p>
+              </div>
+          )}
           <div className="flex gap-3 justify-center flex-wrap">
-            <button onClick={() => { setSubmitted(false); setSelected(''); setNote(''); setActivities([]); }}
-              className="btn-secondary">Log Again</button>
+            <button onClick={handleReset} className="btn-secondary">Log Again</button>
             <button onClick={() => navigate('/dashboard')} className="btn-primary">View Dashboard 📊</button>
           </div>
         </div>
