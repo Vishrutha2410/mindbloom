@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import api          from './utils/api.js';
 import Navbar       from './components/Navbar.jsx';
 import Home         from './pages/Home.jsx';
 import Login        from './pages/Login.jsx';
@@ -20,7 +21,28 @@ export default function App() {
 
   useEffect(() => {
     const saved = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
     if (saved) setUser(JSON.parse(saved));
+    if (token) {
+      api.get('/auth/profile')
+        .then(({ data }) => {
+          const existing = JSON.parse(localStorage.getItem('user') || '{}');
+          // Merge fresh data with existing (keep token)
+          const merged = {
+            ...existing,
+            ...data,
+            token: existing.token,
+          };
+          localStorage.setItem('user', JSON.stringify(merged));
+          setUser(merged);
+        })
+        .catch(() => {
+          // Token expired or invalid — log out
+          localStorage.removeItem('user');
+          localStorage.removeItem('token');
+          setUser(null);
+        });
+    }
     if (localStorage.getItem('theme') === 'dark') setDark(true);
   }, []);
 

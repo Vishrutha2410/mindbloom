@@ -26,6 +26,8 @@ export default function Register({ setUser }) {
   };
 
   const handleGoogleSuccess = (data) =>{
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data));
     setUser(data);
     navigate('/dashboard');
   };

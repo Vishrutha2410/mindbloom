@@ -19,11 +19,13 @@ console.log('☁️ Cloudinary config:', {
 // Storage config — saves directly to Cloudinary
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: {
-    folder:         'mindbloom/avatars',   // folder name in Cloudinary
+  params: (req, file)=>{
+    return{
+      folder:         'mindbloom/avatars',   // folder name in Cloudinary
     allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
     transformation: [{ width: 300, height: 300, crop: 'fill', gravity: 'face' }],
     public_id:       `avatar_${req.user?._id}_${Date.now()}`,
+    };
   },
 });
 const fileFilter = (req, file, cb) => {
@@ -34,5 +36,5 @@ const fileFilter = (req, file, cb) => {
     cb(new Error('Only image files are allowed (jpg, png, gif, webp)'), false);
   }
 };
-export const upload  = multer({ storage, limits: { fileSize: 2 * 1024 * 1024 }, fileFilter });
+export const upload  = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 }, fileFilter });
 export default cloudinary;

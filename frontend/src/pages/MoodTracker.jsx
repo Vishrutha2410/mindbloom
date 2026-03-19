@@ -19,6 +19,8 @@ export default function MoodTracker() {
   const [activities, setActivities] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading]     = useState(false);
+  const [error,  setError] = useState('');
+
   const navigate = useNavigate();
 
   const handleMoodSelect = async (mood) => {
