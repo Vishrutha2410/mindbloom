@@ -57,7 +57,7 @@ export default function Games() {
             <div className="text-5xl mb-3">{g.icon}</div>
             <h2 className="text-xl font-bold mb-1">{g.title}</h2>
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">{g.desc}</p>
-            <span className="btn-primary inline-block text-sm !px-4 !py-2">{t('games.play_now ▶')}</span>
+            <span className="btn-primary inline-block text-sm !px-4 !py-2">{t('games.play_now')}</span>
           </button>
         ))}
       </div>

@@ -73,7 +73,7 @@ export default function Dashboard({ user }) {
           <div className="flex gap-4 text-center">
             <div className="bg-white/60 dark:bg-gray-700/60 rounded-2xl px-5 py-3">
               <div className="text-3xl font-bold text-bloom-green">{user?.streak || 0}</div>
-              <div className="text-xs text-gray-500">{t('dashboard.day_streak')} 🔥</div>
+              <div className="text-xs text-gray-500">{t('dashboard.day_streak')} </div>
             </div>
             <div className="bg-white/60 dark:bg-gray-700/60 rounded-2xl px-5 py-3">
               <div className="text-3xl font-bold text-bloom-lavender">{history.length}</div>

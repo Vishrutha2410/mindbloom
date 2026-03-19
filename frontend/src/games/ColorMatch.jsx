@@ -40,7 +40,7 @@ export default function ColorMatch({ onBack }) {
   return (
     <div className="max-w-md mx-auto px-4 py-8 fade-in">
       <div className="flex items-center justify-between mb-6">
-        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">{t('←games.back')}</button>
+        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">{t('games.back')}</button>
         <h1 className="text-2xl font-bold">🌈 Color Match</h1>
         <span className="bg-bloom-pink text-white px-4 py-2 rounded-xl font-bold text-sm">{score}/{total}</span>
       </div>

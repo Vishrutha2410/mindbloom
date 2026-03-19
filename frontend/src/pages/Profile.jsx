@@ -129,9 +129,9 @@ export default function Profile({ user, setUser }) {
     name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '?';
 
   const tabs = [
-    { id: 'personal',  label: t('👤 profile.personal Info' )},
-    { id: 'security',  label: t('🔒 profile.password')},
-    { id: 'stats',     label: t('📊 profile.my_stats')},
+    { id: 'personal',  label:t('profile.personal_info' )},
+    { id: 'security',  label:t('profile.password')},
+    { id: 'stats',     label:t('profile.my_stats')},
   ];
 
   return (
@@ -197,7 +197,7 @@ export default function Profile({ user, setUser }) {
           {/* Streak badge */}
           <div className="text-center bg-white/60 dark:bg-gray-700/60 rounded-2xl px-5 py-3">
             <div className="text-3xl font-bold text-bloom-green">{user?.streak || 0}</div>
-            <div className="text-xs text-gray-500">{t('🔥 profile.day_streak')}</div>
+            <div className="text-xs text-gray-500">🔥{t('profile.day_streak')}</div>
           </div>
         </div>
       </div>
@@ -221,7 +221,7 @@ export default function Profile({ user, setUser }) {
         {/* ── Tab: Personal Info ───────────────────────────────── */}
         {activeTab === 'personal' && (
           <div className="card space-y-4 fade-in">
-            <h2 className="font-bold text-lg mb-2">{t('👤 profile.personal_info')}</h2>
+            <h2 className="font-bold text-lg mb-2">{t('profile.personal_info')}</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -282,7 +282,7 @@ export default function Profile({ user, setUser }) {
             )}
 
             <button type="submit" disabled={loading} className="btn-primary w-full !py-3">
-              {loading ? t('⏳ profile.aving') : t('💾 profile.save_changes')}
+              {loading ? t('profile.saving') : t('profile.save_changes')}
             </button>
           </div>
         )}

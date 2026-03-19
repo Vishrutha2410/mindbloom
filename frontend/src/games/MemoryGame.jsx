@@ -54,7 +54,7 @@ export default function MemoryGame({ onBack }) {
   return (
     <div className="max-w-xl mx-auto px-4 py-8 fade-in">
       <div className="flex items-center justify-between mb-6">
-        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">{t('←games.back')}</button>
+        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">{t('games.back')}</button>
         <h1 className="text-2xl font-bold">🃏 Memory Game</h1>
         <span className="bg-bloom-lavender text-white px-4 py-2 rounded-xl font-bold text-sm">Moves: {moves}</span>
       </div>

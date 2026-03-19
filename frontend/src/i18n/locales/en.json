@@ -23,7 +23,7 @@
   "dashboard": {
     "hello": "Hello",
     "subtitle": "How are you feeling today? Let's make it a great day.",
-    "day_streak": "Day Streak",
+    "day_streak": "Day Streak🔥",
     "mood_logs": "Mood Logs",
     "quick_access": "⚡ Quick Access",
     "log_mood": "Log Mood",
@@ -32,7 +32,11 @@
     "read": "Read",
     "meditate": "Meditate",
     "weekly_chart": "📈 Weekly Mood Chart",
-    "recent_history": "🕐 Recent Mood History"
+    "recent_history": "🕐 Recent Mood History",
+     "your_badges": "🏅 Your Badges",
+    "no_mood_data": "No mood data yet.",
+    "log_first": "Log your first mood!",
+    "no_history": "No history yet."
   },
   "mood": {
     "title": "How Are You Feeling?",
@@ -48,6 +52,7 @@
     "view_dashboard": "View Dashboard 📊",
     "recommended": "✨ Recommended for You",
     "no_activities": "No specific activities found. Try Games or Meditation!",
+    "error": "Failed to save mood. Please try again.",
     "moods": {
       "happy": "Happy",
       "calm": "Calm",
@@ -142,12 +147,12 @@
     "or_register": "or register with email",
     "age_optional": "Age (optional)"
   },
-  "drawing": {
+ "drawing": {
     "title": "🎨 Drawing Board",
     "subtitle": "Express yourself freely — no rules, just creativity.",
-    "pencil": "Pencil",
-    "brush": "Brush",
-    "eraser": "Eraser",
+    "pencil": "✏️ Pencil",
+    "brush": "🖌️ Brush",
+    "eraser": "🧹 Eraser",
     "clear": "🗑️ Clear",
     "save": "💾 Save PNG",
     "size": "Size",

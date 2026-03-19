@@ -120,9 +120,9 @@ export default function DrawingBoard() {
 
         {/* Actions */}
         <div className="flex gap-2 ml-auto">
-          <button onClick={clearCanvas}  className="btn-secondary !px-4 !py-2 text-sm">{t('🗑 drawing.clear')}</button>
+          <button onClick={clearCanvas}  className="btn-secondary !px-4 !py-2 text-sm">{t('drawing.clear')}</button>
           <button onClick={saveDrawing}  className={`btn-primary !px-4 !py-2 text-sm ${saved ? '!bg-green-500' : ''}`}>
-            {saved ? '✅ Saved!' : t('💾drawing.save')}
+            {saved ? '✅ Saved!' : t('drawing.save')}
           </button>
         </div>
       </div>

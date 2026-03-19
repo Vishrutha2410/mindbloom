@@ -47,7 +47,7 @@ export default function ReactionGame({ onBack }) {
   return (
     <div className="max-w-md mx-auto px-4 py-8 fade-in">
       <div className="flex items-center justify-between mb-6">
-        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">{t('←games.back')}</button>
+        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">{t('games.back')}</button>
         <h1 className="text-2xl font-bold">⚡ Reaction Test</h1>
         <span className="bg-yellow-400 text-white px-4 py-2 rounded-xl font-bold text-sm">
           Best: {best ? `${best}ms` : '--'}

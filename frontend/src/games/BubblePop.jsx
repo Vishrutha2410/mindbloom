@@ -35,7 +35,7 @@ export default function BubblePop({ onBack }) {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 fade-in">
       <div className="flex items-center justify-between mb-6">
-        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">{t('←games.back')}</button>
+        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">{t('games.back')}</button>
         <h1 className="text-2xl font-bold">🫧 Bubble Pop</h1>
         <span className="bg-bloom-green text-white px-4 py-2 rounded-xl font-bold">Score: {score}</span>
       </div>

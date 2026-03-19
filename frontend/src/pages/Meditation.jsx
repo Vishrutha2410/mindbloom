@@ -115,7 +115,7 @@ export default function Meditation() {
                     ))}
                   </div>
                 </div>
-                <span className="btn-primary !px-4 !py-2 text-sm">{t('meditation.start ▶')}</span>
+                <span className="btn-primary !px-4 !py-2 text-sm">{t('meditation.start')}</span>
               </div>
             </button>
           ))}
@@ -146,9 +146,9 @@ export default function Meditation() {
           <div className="flex gap-3 justify-center">
             <button onClick={() => running ? stop() : start(selected)}
               className={`btn-primary !px-6 ${!running ? '!bg-bloom-green' : '!bg-orange-400 hover:!bg-orange-500'}`}>
-              {running ? t('⏸meditation.pause') : t('▶meditation.resume')}
+              {running ? t('meditation.pause') : t('meditation.resume')}
             </button>
-            <button onClick={reset} className="btn-secondary !px-6">{t('✕meditation.exit')}</button>
+            <button onClick={reset} className="btn-secondary !px-6">{t('meditation.exit')}</button>
           </div>
         </div>
       )}
