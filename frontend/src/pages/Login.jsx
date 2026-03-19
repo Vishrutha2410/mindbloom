@@ -57,7 +57,7 @@ export default function Login({ setUser }) {
               value={form.password} onChange={e => setForm({...form, password: e.target.value})} />
           </div>
           <button type="submit" disabled={loading} className="btn-primary w-full !py-3 text-base">
-            {loading ? t('⏳auth.signing_in') : t('auth.login_btn🌿')}
+            {loading ? t('auth.signing_in') : t('auth.login_btn')}
           </button>
         </form>
 

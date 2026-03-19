@@ -67,7 +67,7 @@ export default function Register({ setUser }) {
               value={form.age} onChange={e => setForm({...form, age: e.target.value})} />
           </div>
           <button type="submit" disabled={loading} className="btn-primary w-full !py-3 text-base">
-            {loading ? t('⏳auth.creating') : t('auth.register_btn🌸')}
+            {loading ? t('auth.creating') : t('auth.register_btn')}
           </button>
         </form>
 
