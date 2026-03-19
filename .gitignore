@@ -1,0 +1,29 @@
+# Dependencies — never commit these
+node_modules/
+*/node_modules/
+
+# Environment files — never commit these
+.env
+.env.local
+backend/.env
+frontend/.env
+frontend/.env.local
+
+# Build outputs
+dist/
+frontend/dist/
+
+# Uploads (stored on Cloudinary)
+backend/uploads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
