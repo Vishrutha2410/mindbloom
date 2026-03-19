@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const WORDS_BY_LEVEL = [
   ['calm', 'breathe', 'peace', 'bloom', 'relax', 'smile', 'happy', 'focus', 'sleep', 'rest'],
@@ -21,6 +22,7 @@ export default function TypingGame({ onBack }) {
   const [started,  setStarted]  = useState(false);
   const [done,     setDone]     = useState(false);
   const inputRef = useRef(null);
+  const {t} = useTranslation();
 
   useEffect(() => {
     if (!started || done) return;
@@ -64,7 +66,7 @@ export default function TypingGame({ onBack }) {
   return (
     <div className="max-w-xl mx-auto px-4 py-8 fade-in">
       <div className="flex items-center justify-between mb-6">
-        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">← Back</button>
+        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">{t('←games.back')}</button>
         <h1 className="text-2xl font-bold">⌨️ Typing Speed</h1>
         <span className={`px-4 py-2 rounded-xl font-bold text-sm text-white ${timeLeft <= 10 ? 'bg-red-500' : 'bg-bloom-green'}`}>
           ⏱ {timeLeft}s

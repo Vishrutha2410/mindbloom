@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import AgeZoneBanner from '../components/AgeZoneBanner.jsx';
 
 const allSessions = {
@@ -44,6 +45,7 @@ export default function Meditation() {
   const [countdown, setCountdown] = useState(0);
   const [cycles,    setCycles]    = useState(0);
   const intervalRef = useRef(null);
+  const {t} = useTranslation();
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -89,8 +91,8 @@ export default function Meditation() {
     <div className="max-w-2xl mx-auto px-4 py-8 fade-in">
       <div className="text-center mb-6">
         <div className="text-5xl mb-2">🧘</div>
-        <h1 className="text-3xl font-bold">Meditation Zone</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">Sessions tailored for your age group.</p>
+        <h1 className="text-3xl font-bold">{t('meditation.title')}</h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">{t('meditation.subtitle')}</p>
       </div>
 
       <AgeZoneBanner ageGroup={ageGroup} />
@@ -113,7 +115,7 @@ export default function Meditation() {
                     ))}
                   </div>
                 </div>
-                <span className="btn-primary !px-4 !py-2 text-sm">Start ▶</span>
+                <span className="btn-primary !px-4 !py-2 text-sm">{t('meditation.start ▶')}</span>
               </div>
             </button>
           ))}
@@ -121,7 +123,7 @@ export default function Meditation() {
       ) : (
         <div className="text-center">
           <h2 className="text-xl font-bold mb-1">{session.title}</h2>
-          <p className="text-gray-500 text-sm mb-8">Cycles completed: {cycles}</p>
+          <p className="text-gray-500 text-sm mb-8">{t('meditation.cycles')}: {cycles}</p>
           <div className="flex justify-center mb-8">
             <div className="relative w-56 h-56 flex items-center justify-center">
               <div className="absolute inset-0 rounded-full opacity-20 breathe-circle" style={{ backgroundColor: phase?.color }} />
@@ -144,9 +146,9 @@ export default function Meditation() {
           <div className="flex gap-3 justify-center">
             <button onClick={() => running ? stop() : start(selected)}
               className={`btn-primary !px-6 ${!running ? '!bg-bloom-green' : '!bg-orange-400 hover:!bg-orange-500'}`}>
-              {running ? '⏸ Pause' : '▶ Resume'}
+              {running ? t('⏸meditation.pause') : t('▶meditation.resume')}
             </button>
-            <button onClick={reset} className="btn-secondary !px-6">✕ Exit</button>
+            <button onClick={reset} className="btn-secondary !px-6">{t('✕meditation.exit')}</button>
           </div>
         </div>
       )}

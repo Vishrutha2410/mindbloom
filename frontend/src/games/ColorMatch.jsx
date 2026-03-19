@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const COLORS = [
   { name:'Red',    hex:'#EF4444' },
@@ -26,6 +27,7 @@ export default function ColorMatch({ onBack }) {
   const [score,    setScore]    = useState(0);
   const [total,    setTotal]    = useState(0);
   const [feedback, setFeedback] = useState(null);
+  const {t} = useTranslation();
 
   const answer = useCallback((name) => {
     const correct = name === round.correct.name;
@@ -38,7 +40,7 @@ export default function ColorMatch({ onBack }) {
   return (
     <div className="max-w-md mx-auto px-4 py-8 fade-in">
       <div className="flex items-center justify-between mb-6">
-        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">← Back</button>
+        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">{t('←games.back')}</button>
         <h1 className="text-2xl font-bold">🌈 Color Match</h1>
         <span className="bg-bloom-pink text-white px-4 py-2 rounded-xl font-bold text-sm">{score}/{total}</span>
       </div>

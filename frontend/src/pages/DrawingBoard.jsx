@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function DrawingBoard() {
   const canvasRef = useRef(null);
@@ -8,6 +9,7 @@ export default function DrawingBoard() {
   const [size,    setSize]      = useState(4);
   const [saved,   setSaved]     = useState(false);
   const last = useRef(null);
+  const {t} = useTranslation();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -81,8 +83,8 @@ export default function DrawingBoard() {
     <div className="max-w-4xl mx-auto px-4 py-8 fade-in">
       <div className="text-center mb-6">
         <div className="text-4xl mb-1">🎨</div>
-        <h1 className="text-3xl font-bold">Creative Drawing Board</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">Express yourself freely — no rules, just creativity.</p>
+        <h1 className="text-3xl font-bold">{t('drawing.title')}</h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">{t('drawing.subtitle')}</p>
       </div>
 
       {/* Toolbar */}
@@ -110,7 +112,7 @@ export default function DrawingBoard() {
 
         {/* Brush Size */}
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-500">Size:</span>
+          <span className="text-sm text-gray-500">{t('drawing.size')}:</span>
           <input type="range" min="1" max="20" value={size} onChange={e => setSize(+e.target.value)}
             className="w-20 accent-bloom-green" />
           <span className="text-sm font-medium w-4">{size}</span>
@@ -118,9 +120,9 @@ export default function DrawingBoard() {
 
         {/* Actions */}
         <div className="flex gap-2 ml-auto">
-          <button onClick={clearCanvas}  className="btn-secondary !px-4 !py-2 text-sm">🗑 Clear</button>
+          <button onClick={clearCanvas}  className="btn-secondary !px-4 !py-2 text-sm">{t('🗑 drawing.clear')}</button>
           <button onClick={saveDrawing}  className={`btn-primary !px-4 !py-2 text-sm ${saved ? '!bg-green-500' : ''}`}>
-            {saved ? '✅ Saved!' : '💾 Save'}
+            {saved ? '✅ Saved!' : t('💾drawing.save')}
           </button>
         </div>
       </div>

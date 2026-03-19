@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
+import { useTranslation } from 'react-i18next';
 import AgeZoneBanner from '../components/AgeZoneBanner.jsx';
 
 const allContent = {
@@ -150,6 +151,7 @@ export default function ReadingZone() {
   const [ageGroup, setAgeGroup] = useState('young_adults');
   const [tab,      setTab]      = useState('stories');
   const [openIdx,  setOpenIdx]  = useState(null);
+  const {t} = useTranslation();
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -161,11 +163,17 @@ export default function ReadingZone() {
   const tips     = content.tips     || [];
   const affirm   = content.affirmations || [];
 
+  const tabs = [
+    { id:'stories',      label: t('reading.stories')      },
+    { id:'tips',         label: t('reading.tips')         },
+    { id:'affirmations', label: t('reading.affirmations') },
+  ];
+
   // Filter tabs to what this age group has
-  const availableTabs = tabs.filter(t => {
-    if (t.id === 'stories')       return stories.length > 0;
-    if (t.id === 'tips')          return tips.length > 0;
-    if (t.id === 'affirmations')  return affirm.length > 0;
+  const availableTabs = tabs.filter(tab => {
+    if (tab.id === 'stories')       return stories.length > 0;
+    if (tab.id === 'tips')          return tips.length > 0;
+    if (tab.id === 'affirmations')  return affirm.length > 0;
     return false;
   });
 
@@ -173,8 +181,8 @@ export default function ReadingZone() {
     <div className="max-w-3xl mx-auto px-4 py-8 fade-in">
       <div className="text-center mb-6">
         <div className="text-5xl mb-2">📚</div>
-        <h1 className="text-3xl font-bold">Reading Zone</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">Content curated for your stage of life.</p>
+        <h1 className="text-3xl font-bold">{t('reading.title')}</h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">{t('reading.subtitle')}</p>
       </div>
 
       <AgeZoneBanner ageGroup={ageGroup} />

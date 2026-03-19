@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import {useTranslation} from 'react-i18next';
 import api from '../utils/api.js';
 import AgeZoneBanner from  '../components/AgeZoneBanner.jsx';
 
@@ -14,6 +15,7 @@ export default function Dashboard({ user }) {
   const [history, setHistory] = useState([]);
   const [weekly,  setWeekly]  = useState([]);
   const [loading, setLoading] = useState(true);
+  const {t} = useTranslation();
 
   useEffect(() => {
     const load = async () => {
@@ -51,11 +53,11 @@ export default function Dashboard({ user }) {
 
   <AgeZoneBanner ageGroup={user?.ageGroup || 'young_adults'} />
   const shortcuts = [
-    { to:'/mood',       icon:'😊', label:'Log Mood'  },
-    { to:'/games',      icon:'🎮', label:'Play Games' },
-    { to:'/draw',       icon:'🎨', label:'Drawing'    },
-    { to:'/reading',    icon:'📚', label:'Read'       },
-    { to:'/meditation', icon:'🧘', label:'Meditate'   },
+     { to: '/mood',        icon: '😊', label: t('dashboard.log_mood')   },
+    { to: '/games',       icon: '🎮', label: t('dashboard.play_games') },
+    { to: '/draw',        icon: '🎨', label: t('dashboard.drawing')    },
+    { to: '/reading',     icon: '📚', label: t('dashboard.read')       },
+    { to: '/meditation',  icon: '🧘', label: t('dashboard.meditate')   },
   ];
 
   return (
@@ -64,18 +66,18 @@ export default function Dashboard({ user }) {
       <div className="card bg-gradient-to-r from-bloom-green/30 to-bloom-lavender/30 mb-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold">Hello,{' '} <Link to="/profile" classname="hover:text-bloom-lavender underline underline-offset-4 decoration-dotted transition-colors cursor-pointer"> 
+            <h1 className="text-3xl font-bold">{t('dashboard.hello')}{' '} <Link to="/profile" classname="hover:text-bloom-lavender underline underline-offset-4 decoration-dotted transition-colors cursor-pointer"> 
             {user?.name?.split(' ')[0]}</Link>{' '} 👋</h1>
-            <p className="text-gray-600 dark:text-gray-300 mt-1">How are you feeling today? Let's make it a great day.</p>
+            <p className="text-gray-600 dark:text-gray-300 mt-1">{t('dashboard.subtitle')}</p>
           </div>
           <div className="flex gap-4 text-center">
             <div className="bg-white/60 dark:bg-gray-700/60 rounded-2xl px-5 py-3">
               <div className="text-3xl font-bold text-bloom-green">{user?.streak || 0}</div>
-              <div className="text-xs text-gray-500">Day Streak 🔥</div>
+              <div className="text-xs text-gray-500">{t('dashboard.day_streak')} 🔥</div>
             </div>
             <div className="bg-white/60 dark:bg-gray-700/60 rounded-2xl px-5 py-3">
               <div className="text-3xl font-bold text-bloom-lavender">{history.length}</div>
-              <div className="text-xs text-gray-500">Mood Logs 📊</div>
+              <div className="text-xs text-gray-500">{t('dashboard.mood_logs')}</div>
             </div>
           </div>
         </div>
@@ -84,7 +86,7 @@ export default function Dashboard({ user }) {
       {/* Badges */}
       {user?.badges?.length > 0 && (
         <div className="card mb-6">
-          <h2 className="font-bold text-lg mb-3">🏅 Your Badges</h2>
+          <h2 className="font-bold text-lg mb-3"> {t('profile.your_badges')}</h2>
           <div className="flex flex-wrap gap-2">
             {user.badges.map(b => (
               <span key={b} className="bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 px-4 py-1.5 rounded-full text-sm font-semibold">{b}</span>
@@ -95,7 +97,7 @@ export default function Dashboard({ user }) {
 
       {/* Quick Access */}
       <div className="card mb-6">
-        <h2 className="font-bold text-lg mb-4">⚡ Quick Access</h2>
+        <h2 className="font-bold text-lg mb-4"> {t('dashboard.quick_access')}</h2>
         <div className="flex flex-wrap gap-3">
           {shortcuts.map(s => (
             <Link key={s.to} to={s.to}
@@ -109,9 +111,9 @@ export default function Dashboard({ user }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Weekly Mood Chart */}
         <div className="card">
-          <h2 className="font-bold text-lg mb-4">📈 Weekly Mood Chart</h2>
+          <h2 className="font-bold text-lg mb-4"> {t('dashboard.weekly_chart')}</h2>
           {loading ? (
-            <div className="h-48 flex items-center justify-center text-gray-400">Loading...</div>
+            <div className="h-48 flex items-center justify-center text-gray-400">{t('common.loading')}</div>
           ) : weekly.length ? (
             <Line data={chartData} options={chartOptions} />
           ) : (
@@ -124,14 +126,14 @@ export default function Dashboard({ user }) {
 
         {/* Recent Mood History */}
         <div className="card">
-          <h2 className="font-bold text-lg mb-4">🕐 Recent Mood History</h2>
+          <h2 className="font-bold text-lg mb-4"> {t('dashboard.recent_history')}</h2>
           {loading ? (
-            <div className="h-48 flex items-center justify-center text-gray-400">Loading...</div>
+            <div className="h-48 flex items-center justify-center text-gray-400">{t('common.loading')}</div>
           ) : history.length ? (
             <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
               {history.slice(0, 10).map(m => (
                 <div key={m._id} className="flex items-center justify-between bg-bloom-soft dark:bg-gray-700/60 px-4 py-2.5 rounded-xl">
-                  <span className="text-lg">{moodEmoji[m.mood]} <span className="text-sm font-medium capitalize ml-1">{m.mood}</span></span>
+                  <span className="text-lg">{moodEmoji[m.mood]} <span className="text-sm font-medium capitalize ml-1">{t(`mood.moods.${m.mood}`) || m.mood}</span></span>
                   <span className="text-xs text-gray-400">{new Date(m.date).toLocaleDateString()}</span>
                 </div>
               ))}

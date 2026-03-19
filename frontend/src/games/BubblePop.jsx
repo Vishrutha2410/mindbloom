@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const COLORS = ['#6BCB77','#A78BFA','#93C5FD','#F9A8D4','#FCD34D','#FB923C'];
 const rand = (min, max) => Math.floor(Math.random() * (max - min)) + min;
@@ -16,6 +17,7 @@ export default function BubblePop({ onBack }) {
   const [bubbles, setBubbles] = useState(initBubbles);
   const [score,   setScore]   = useState(0);
   const [popping, setPopping] = useState(new Set());
+  const {t} = useTranslation();
 
   const pop = useCallback((id) => {
     setPopping(p => new Set(p).add(id));
@@ -33,7 +35,7 @@ export default function BubblePop({ onBack }) {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 fade-in">
       <div className="flex items-center justify-between mb-6">
-        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">← Back</button>
+        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">{t('←games.back')}</button>
         <h1 className="text-2xl font-bold">🫧 Bubble Pop</h1>
         <span className="bg-bloom-green text-white px-4 py-2 rounded-xl font-bold">Score: {score}</span>
       </div>

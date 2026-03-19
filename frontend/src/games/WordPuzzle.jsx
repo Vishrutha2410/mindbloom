@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const PUZZLES = [
   { scrambled: 'LMCBOO', answer: 'BLOOM',    hint: '🌸 What MindBloom wants you to do' },
@@ -20,6 +21,7 @@ export default function WordPuzzle({ onBack }) {
   const [score,    setScore]    = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [finished, setFinished] = useState(false);
+  const {t} = useTranslation();
 
   const puzzle = PUZZLES[idx];
 
@@ -53,7 +55,7 @@ export default function WordPuzzle({ onBack }) {
         <p className="text-gray-500 mb-4">You scored <strong>{score}</strong> out of {PUZZLES.length}</p>
         <div className="flex gap-3 justify-center">
           <button onClick={reset}   className="btn-primary">Play Again 📝</button>
-          <button onClick={onBack}  className="btn-secondary">← Back</button>
+          <button onClick={onBack}  className="btn-secondary">{t('←games.back')}</button>
         </div>
       </div>
     </div>
@@ -62,7 +64,7 @@ export default function WordPuzzle({ onBack }) {
   return (
     <div className="max-w-md mx-auto px-4 py-8 fade-in">
       <div className="flex items-center justify-between mb-6">
-        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">← Back</button>
+        <button onClick={onBack} className="btn-secondary !px-4 !py-2 text-sm">{t('←games.back')}</button>
         <h1 className="text-2xl font-bold">📝 Word Puzzle</h1>
         <span className="bg-teal-500 text-white px-4 py-2 rounded-xl font-bold text-sm">
           {idx + 1}/{PUZZLES.length}

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api.js';
 import { ageGroupLabel } from '../utils/ageGroup.js';
@@ -6,6 +7,7 @@ import { ageGroupLabel } from '../utils/ageGroup.js';
 export default function Profile({ user, setUser }) {
   const navigate = useNavigate();
   const fileRef = useRef(null);
+  const {t} = useTranslation();
 
   const [form, setForm] = useState({
     name:       user?.name       || '',
@@ -82,7 +84,7 @@ export default function Profile({ user, setUser }) {
       setPreviewAvatar(data.avatar);
       setSuccess('Profile picture updated! ✅');
     } catch (err) {
-      setError(err.response?.data?.message || 'Photo upload failed');
+      setError(err.response?.data?.message || t('profile.photo_failed'));
     } finally {
       setAvatarLoading(false);
     }
@@ -94,9 +96,9 @@ export default function Profile({ user, setUser }) {
 
     // Validate password change if attempted
    if (passwords.newPass || passwords.current) {
-      if (!passwords.current)          { setLoading(false); return setError('Enter your current password'); }
-      if (passwords.newPass.length < 6) { setLoading(false); return setError('New password must be at least 6 characters'); }
-      if (passwords.newPass !== passwords.confirm) { setLoading(false); return setError('New passwords do not match'); }
+      if (!passwords.current)            { setLoading(false); return setError(t('profile.current_password') + ' required'); }
+      if (passwords.newPass.length < 6)  { setLoading(false); return setError(t('profile.new_password_length')); }
+      if (passwords.newPass !== passwords.confirm) { setLoading(false); return setError(t('profile.passwords_no_match')); }
     }
 
     try {
@@ -117,7 +119,7 @@ export default function Profile({ user, setUser }) {
       setSuccess('Profile updated successfully! ✅');
       setPasswords({ current: '', newPass: '', confirm: '' });
     } catch (err) {
-      setError(err.response?.data?.message || 'Update failed');
+      setError(err.response?.data?.message || t('profile.update_failed'));
     } finally {
       setLoading(false);
     }
@@ -127,9 +129,9 @@ export default function Profile({ user, setUser }) {
     name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '?';
 
   const tabs = [
-    { id: 'personal',  label: '👤 Personal Info' },
-    { id: 'security',  label: '🔒 Password'       },
-    { id: 'stats',     label: '📊 My Stats'        },
+    { id: 'personal',  label: t('👤 profile.personal Info' )},
+    { id: 'security',  label: t('🔒 profile.password')},
+    { id: 'stats',     label: t('📊 profile.my_stats')},
   ];
 
   return (
@@ -173,7 +175,7 @@ export default function Profile({ user, setUser }) {
             <p className="text-gray-500 dark:text-gray-400 text-sm">{user?.email}</p>
             <div className="flex flex-wrap gap-2 mt-2">
               <span className="bg-bloom-green/20 text-green-700 dark:text-green-300 px-3 py-0.5 rounded-full text-xs font-semibold">
-                {ageGroupLabel[user?.ageGroup] || 'Young Adult'}
+                {t(`ageGroups.${user?.ageGroup}`) || 'Young Adult'}
               </span>
               {user?.occupation && (
                 <span className="bg-bloom-blue/20 text-blue-700 dark:text-blue-300 px-3 py-0.5 rounded-full text-xs font-semibold">
@@ -189,13 +191,13 @@ export default function Profile({ user, setUser }) {
             {user?.bio && (
               <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 italic">"{user.bio}"</p>
             )}
-             <p className="text-xs text-gray-400 mt-2">📷 Click photo to change it</p>
+             <p className="text-xs text-gray-400 mt-2">{t('📷 profile.click_photo')}</p>
           </div>
 
           {/* Streak badge */}
           <div className="text-center bg-white/60 dark:bg-gray-700/60 rounded-2xl px-5 py-3">
             <div className="text-3xl font-bold text-bloom-green">{user?.streak || 0}</div>
-            <div className="text-xs text-gray-500">Day Streak 🔥</div>
+            <div className="text-xs text-gray-500">{t('🔥 profile.day_streak')}</div>
           </div>
         </div>
       </div>
@@ -219,37 +221,37 @@ export default function Profile({ user, setUser }) {
         {/* ── Tab: Personal Info ───────────────────────────────── */}
         {activeTab === 'personal' && (
           <div className="card space-y-4 fade-in">
-            <h2 className="font-bold text-lg mb-2">👤 Personal Information</h2>
+            <h2 className="font-bold text-lg mb-2">{t('👤 profile.personal_info')}</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Full Name <span className="text-red-400">*</span></label>
-                <input type="text" className="input-field" placeholder="Your full name"
-                  value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
+                <label className="block text-sm font-medium mb-1">{t('profile.full_name')} <span className="text-red-400">*</span></label>
+                <input type="text" className="input-field" placeholder="your name" required
+                  value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Age</label>
-                <input type="number" className="input-field" placeholder="Your age" min="5" max="100"
+                <label className="block text-sm font-medium mb-1">{t('profile.age')}</label>
+                <input type="number" className="input-field" placeholder="your age" min="5" max="100"
                   value={form.age} onChange={e => setForm({ ...form, age: e.target.value })} />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Phone Number</label>
+                <label className="block text-sm font-medium mb-1">{t('profile.phone')}</label>
                 <input type="tel" className="input-field" placeholder="+91 9876543210"
                   value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Location</label>
+                <label className="block text-sm font-medium mb-1">{t('profile.location')}</label>
                 <input type="text" className="input-field" placeholder="City, Country"
                   value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} />
               </div>
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium mb-1">Occupation</label>
+                <label className="block text-sm font-medium mb-1">{t('profile.occupation')}</label>
                 <input type="text" className="input-field" placeholder="e.g. Student, Engineer, Teacher"
                   value={form.occupation} onChange={e => setForm({ ...form, occupation: e.target.value })} />
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium mb-1">
-                  Bio <span className="text-gray-400 text-xs">(max 200 characters)</span>
+                  {t('profile.bio')} <span className="text-gray-400 text-xs">(max 200 characters)</span>
                 </label>
                 <textarea className="input-field resize-none" rows={3}
                   placeholder="Tell us a little about yourself..."
@@ -261,14 +263,14 @@ export default function Profile({ user, setUser }) {
 
             {/* Email (read-only) */}
             <div>
-              <label className="block text-sm font-medium mb-1">Email <span className="text-gray-400 text-xs">(cannot be changed)</span></label>
+              <label className="block text-sm font-medium mb-1">{t('profile.email')} <span className="text-gray-400 text-xs">{t('profile.cannot_change')}</span></label>
               <input type="email" className="input-field opacity-60 cursor-not-allowed" value={user?.email} disabled />
             </div>
 
             {/* Age group preview */}
             {form.age && (
               <div className="bg-bloom-soft dark:bg-gray-700/60 rounded-xl px-4 py-3 text-sm">
-                <span className="font-medium">Your zone will be: </span>
+                <span className="font-medium">{t('profile.your_zone')}: </span>
                 <span className="text-bloom-lavender font-bold">
                   {ageGroupLabel[
                     form.age >= 8  && form.age <= 12 ? 'kids' :
@@ -280,7 +282,7 @@ export default function Profile({ user, setUser }) {
             )}
 
             <button type="submit" disabled={loading} className="btn-primary w-full !py-3">
-              {loading ? '⏳ Saving...' : '💾 Save Changes'}
+              {loading ? t('⏳ profile.aving') : t('💾 profile.save_changes')}
             </button>
           </div>
         )}
@@ -288,7 +290,7 @@ export default function Profile({ user, setUser }) {
         {/* ── Tab: Password ────────────────────────────────────── */}
         {activeTab === 'security' && (
           <div className="card space-y-4 fade-in">
-            <h2 className="font-bold text-lg mb-2">🔒 Change Password</h2>
+            <h2 className="font-bold text-lg mb-2">{t('🔒profile.password')}</h2>
 
             {user?.googleId && (
               <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-xl px-4 py-3 text-sm text-blue-700 dark:text-blue-300">
@@ -297,30 +299,30 @@ export default function Profile({ user, setUser }) {
             )}
 
             <div>
-              <label className="block text-sm font-medium mb-1">Current Password</label>
+              <label className="block text-sm font-medium mb-1">{t('profile.current_password')}</label>
               <input type="password" className="input-field" placeholder="Enter current password"
                 value={passwords.current} onChange={e => setPasswords({ ...passwords, current: e.target.value })} />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">New Password</label>
+              <label className="block text-sm font-medium mb-1">{t('profile.new_password')}</label>
               <input type="password" className="input-field" placeholder="At least 6 characters"
                 value={passwords.newPass} onChange={e => setPasswords({ ...passwords, newPass: e.target.value })} />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Confirm New Password</label>
+              <label className="block text-sm font-medium mb-1">{t('profile.confirm_password')}</label>
               <input type="password" className="input-field" placeholder="Repeat new password"
                 value={passwords.confirm} onChange={e => setPasswords({ ...passwords, confirm: e.target.value })} />
               {passwords.newPass && passwords.confirm && passwords.newPass !== passwords.confirm && (
-                <p className="text-red-500 text-xs mt-1">❌ Passwords do not match</p>
+                <p className="text-red-500 text-xs mt-1">❌{t('profile.passwords_no_match')}</p>
               )}
               {passwords.newPass && passwords.confirm && passwords.newPass === passwords.confirm && (
-                <p className="text-green-500 text-xs mt-1">✅ Passwords match</p>
+                <p className="text-green-500 text-xs mt-1">✅ {t('profile.passwords_match')}</p>
               )}
             </div>
 
             <button type="submit" disabled={loading || !passwords.current || !passwords.newPass}
               className="btn-primary w-full !py-3 disabled:opacity-50 disabled:cursor-not-allowed">
-              {loading ? '⏳ Updating...' : '🔒 Update Password'}
+              {loading ? t('⏳ profile.saving') : t('🔒 profile.update_password')}
             </button>
           </div>
         )}
@@ -333,9 +335,9 @@ export default function Profile({ user, setUser }) {
           {/* Stats grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {[
-              { label: 'Day Streak',       value: user?.streak || 0,          icon: '🔥', color: 'bg-orange-100 dark:bg-orange-900/30' },
-              { label: 'Mood Logs',        value: moodCount ,                 icon: '📊', color: 'bg-blue-100 dark:bg-blue-900/30'   },
-              { label: 'Badges Earned',    value: user?.badges?.length || 0,  icon: '🏅', color: 'bg-yellow-100 dark:bg-yellow-900/30' },
+              { label: t('profile.day_streak'),    value: user?.streak || 0,         icon:'🔥', color:'bg-orange-100 dark:bg-orange-900/30' },
+              { label: t('profile.mood_logs'),     value: moodCount,                 icon:'📊', color:'bg-blue-100 dark:bg-blue-900/30'    },
+              { label: t('profile.badges_earned'), value: freshBadges.length,        icon:'🏅', color:'bg-yellow-100 dark:bg-yellow-900/30' },
             ].map(s => (
               <div key={s.label} className={`card text-center ${s.color}`}>
                 <div className="text-3xl mb-1">{s.icon}</div>
@@ -347,7 +349,7 @@ export default function Profile({ user, setUser }) {
 
           {/* Badges */}
           <div className="card">
-            <h3 className="font-bold text-lg mb-4">🏅 Your Badges</h3>
+            <h3 className="font-bold text-lg mb-4">{t('profile.your_badges')}</h3>
             <p className="text-xs text-gray-400 mb-4">Badges are earned by logging moods and maintaining streaks.</p>
 
             {/* How to earn */}
@@ -377,12 +379,12 @@ export default function Profile({ user, setUser }) {
 
           {/* Member since */}
           <div className="card">
-            <h3 className="font-bold text-lg mb-3">📅 Account Info</h3>
+            <h3 className="font-bold text-lg mb-3"> {t('profile.account_info')}</h3>
             <div className="space-y-2 text-sm">
               {[
-                { label:'Member Since',   value: user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en',{year:'numeric',month:'long',day:'numeric'}) : 'N/A' },
-                { label:'Age Zone',       value: ageGroupLabel[user?.ageGroup] || 'Young Adults' },
-                { label:'Sign-in Method', value: user?.googleId ? '🔵 Google' : '📧 Email' },
+                { label: t('profile.member_since'),   value: user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en', {year:'numeric',month:'long',day:'numeric'}) : 'N/A' },
+                 { label: t('profile.age_zone'),       value: t(`ageGroups.${user?.ageGroup}`) || 'Young Adults' },
+                { label: t('profile.signin_method'), value: user?.googleId ? '🔵 Google' : '📧 Email' },
               ].map(r => (
                 <div key={r.label} className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
                   <span className="text-gray-500">{r.label}</span>
